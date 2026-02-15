@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise For You NADA</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black; 
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Lblassa fin ghaytrsem l bouquet */
+        #bouquet-wrapper {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            opacity: 1;
+            transition: opacity 2s ease-in-out;
+            z-index: 20;
+            transform-origin: bottom center;
+            animation: wind 5s ease-in-out 5s infinite alternate;
+        }
+
+        @keyframes wind {
+            0% { transform: rotate(-3deg); }
+            100% { transform: rotate(3deg); }
+        }
+
+        svg#stems-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .stem {
+            fill: none;
+            stroke: #00802b; 
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+            animation: growStem 2.5s ease-out forwards;
+            filter: drop-shadow(0 0 3px #00802b);
+        }
+
+        @keyframes growStem {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .artistic-flower {
+            position: absolute;
+            width: 70px; 
+            height: 70px;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 10;
+            animation: bloom 1.5s ease-out forwards;
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); 
+        }
+
+        @keyframes bloom {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(-45deg); }
+            70% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        /* Lmessage */
+        #message {
+            position: absolute;
+            text-align: center;
+            z-index: 30;
+            opacity: 0;
+            transition: opacity 2s ease-in; 
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .show-message {
+            opacity: 1 !important;
+        }
+
+        h1 { color: #ff1a1a; font-size: 4rem; margin: 0; text-shadow: 0 0 25px #ff1a1a; }
+        p { color: #ffcccc; font-size: 1.5rem; margin-top: 15px; font-style: italic; }
+
+        /* Real Madrid */
+        #real-madrid-section {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 2s ease-in 14s forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #rm-logo { 
+            width: 120px; 
+            height: auto; 
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4)); 
+            margin-bottom: 10px; 
+        }
+
+        #hala-madrid { 
+            color: #ffffff; 
+            font-size: 2.2rem; 
+            margin: 0; 
+            font-family: 'Arial', sans-serif; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            text-shadow: 0 0 10px #ffffff, 0 0 20px #ffd700; 
+        }
+
+        /* L'Bouton d lcadeau */
+        #gift-btn {
+            margin-top: 40px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(45deg, #cc0000, #ff1a1a);
+            border: 2px solid gold;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            opacity: 0;
+            animation: fadeIn 2s ease-in 16s forwards; 
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        #gift-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px gold;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* Chta dyal lwerd */
+        .petal { position: absolute; top: -10%; user-select: none; animation: fall linear infinite; z-index: 5; }
+        @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1;} 100% { transform: translateY(110vh) rotate(360deg); opacity: 0;} }
+
+        /* --- CARTE D'ANNIVERSAIRE 3D --- */
+        #card-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s;
+            perspective: 1500px; 
+        }
+
+        .birthday-card {
+            width: 320px;
+            height: 450px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+
+        .card-inside {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff8e7; 
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2) inset, 0 0 20px gold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            box-sizing: border-box;
+            text-align: center;
+            color: #333;
+        }
+
+        .card-inside h2 { color: #cc0000; font-size: 2rem; margin-bottom: 15px; font-family: 'Arial', sans-serif;}
+        .card-inside p { color: #000; font-size: 1.2rem; line-height: 1.6; margin: 0; font-style: normal; font-family: 'Arial', sans-serif;}
+        .card-inside .signature { margin-top: 20px; font-weight: bold; color: #cc0000; font-size: 1.3rem;}
+
+        .card-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #aa0000, #ff1a1a);
+            border-radius: 10px;
+            border: 3px solid gold;
+            transform-origin: left; 
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.8);
+            backface-visibility: hidden; 
+        }
+
+        .card-cover h2 {
+            color: gold;
+            text-shadow: 2px 2px 5px black;
+            font-size: 2.2rem;
+            margin: 0;
+            text-align: center;
+        }
+
+        .card-cover p {
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .birthday-card.open .card-cover {
+            transform: rotateY(-140deg); 
+            box-shadow: -10px 5px 20px rgba(0,0,0,0.8);
+        }
+
+        #close-overlay {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bouquet-wrapper">
+        <svg id="stems-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+        <div id="roses-container"></div>
+    </div>
+
+    <div id="message">
+        <h1>Happy Valentine's Day ❤️</h1>
+        <p>I grew this red sunflower garden just for you...</p>
+        
+        <div id="real-madrid-section">
+            <img src="https://cdn.worldvectorlogo.com/logos/real-madrid-c-f.svg" alt="Real Madrid Logo" id="rm-logo" onerror="this.outerHTML='<div style=\'font-size: 80px; text-shadow: 0 0 20px gold; margin-bottom: 10px;\'>👑⚽</div>'">
+            <h2 id="hala-madrid">¡Hala Madrid! 👑🤍</h2>
+        </div>
+
+        <button id="gift-btn">Open Your Gift 🎁</button>
+    </div>
+
+    <div id="card-overlay">
+        <span id="close-overlay">✖</span>
+        
+        <div class="birthday-card" id="bday-card">
+            <div class="card-inside">
+                <h2>BENFICA FJIB </h2>
+                <p>May your special day be as beautiful and unique as the garden I grew for you.</p>
+                <p>Wishing you endless joy, success, and love. You deserve the absolute best today and always!</p>
+                <div class="signature">Yours forever ❤️<br>¡Hala Madrid!</div>
+            </div>
+
+            <div class="card-cover">
+                <h2>A Special<br>Gift For You</h2>
+                <p>(Click to open 💌)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const svgStems = document.getElementById('stems-svg');
+        const rosesContainer = document.getElementById('roses-container');
+        const totalRoses = 40; 
+
+        function createRedSunflower() {
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "-50 -50 100 100");
+            svg.classList.add("artistic-flower");
+
+            for (let i = 0; i < 24; i++) {
+                const petal = document.createElementNS(svgNS, "path");
+                petal.setAttribute("d", "M 0,-8 Q 12,-25 0,-45 Q -12,-25 0,-8 Z");
+                let color = i % 2 === 0 ? "#ff1a1a" : "#cc0000"; 
+                let angle = i * 15; 
+                petal.setAttribute("fill", color);
+                petal.setAttribute("transform", `rotate(${angle})`);
+                svg.appendChild(petal);
+            }
+
+            const center = document.createElementNS(svgNS, "circle");
+            center.setAttribute("cx", "0");
+            center.setAttribute("cy", "0");
+            center.setAttribute("r", "14");
+            center.setAttribute("fill", "#2a1508"); 
+            svg.appendChild(center);
+
+            return svg;
+        }
+
+        for(let i = 0; i < totalRoses; i++) {
+            let endX = 150 + Math.random() * 700; 
+            let endY = 100 + Math.random() * 600; 
+            
+            let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            let controlX = 500; 
+            let controlY = endY + 200; 
+            path.setAttribute("d", `M 500 1000 Q ${controlX} ${controlY} ${endX} ${endY}`);
+            path.classList.add("stem");
+            
+            let delay = Math.random() * 4; 
+            path.style.animationDelay = delay + "s";
+            svgStems.appendChild(path);
+
+            let flower = createRedSunflower();
+            flower.style.left = (endX / 10) + "%";
+            flower.style.top = (endY / 10) + "%";
+            flower.style.animationDelay = (delay + 1.5) + "s";
+            
+            rosesContainer.appendChild(flower);
+        }
+
+        // Tkhbya d lwerd w tbyen d lmessage
+        setTimeout(() => {
+            document.getElementById('bouquet-wrapper').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('bouquet-wrapper').style.display = 'none';
+                document.getElementById('message').classList.add('show-message');
+                setInterval(createPetal, 150);
+            }, 2000);
+        }, 12000); 
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.innerHTML = '🌻'; 
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's'; 
+            petal.style.fontSize = Math.random() * 20 + 15 + 'px'; 
+            petal.style.filter = "sepia(1) hue-rotate(-50deg) saturate(3)"; 
+            document.body.appendChild(petal);
+            setTimeout(() => { petal.remove(); }, 5000);
+        }
+
+        /* --- LOGIC DYAL L'CARTE 3D --- */
+        const giftBtn = document.getElementById('gift-btn');
+        const cardOverlay = document.getElementById('card-overlay');
+        const closeOverlay = document.getElementById('close-overlay');
+        const bdayCard = document.getElementById('bday-card');
+
+        giftBtn.addEventListener('click', () => {
+            cardOverlay.style.display = 'flex';
+            setTimeout(() => { cardOverlay.style.opacity = '1'; }, 50);
+        });
+
+        bdayCard.addEventListener('click', () => {
+            bdayCard.classList.toggle('open');
+        });
+
+        closeOverlay.addEventListener('click', () => {
+            cardOverlay.style.opacity = '0';
+            setTimeout(() => { 
+                cardOverlay.style.display = 'none'; 
+                bdayCard.classList.remove('open'); 
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
